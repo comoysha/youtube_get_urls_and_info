@@ -22,6 +22,18 @@ def read_urls(csv_path: str) -> list[str]:
     return urls
 
 
+def read_urls_from_multi_column_csv(csv_path: str) -> list[str]:
+    """Read URLs from CSV exported by download_youtube_channel_list.py"""
+    urls: list[str] = []
+    with open(csv_path, "r", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            url = row.get("webpage_url", "").strip()
+            if url and not url.startswith("#"):
+                urls.append(url)
+    return urls
+
+
 def run_yt_dlp(url: str, video_dir: str, srt_dir: str, download_video: bool) -> None:
     video_dir = os.path.abspath(video_dir)
     srt_dir = os.path.abspath(srt_dir)
@@ -80,7 +92,7 @@ def main() -> int:
     os.makedirs(args.video_dir, exist_ok=True)
     os.makedirs(args.srt_dir, exist_ok=True)
 
-    urls = read_urls(args.csv)
+    urls = read_urls_from_multi_column_csv(args.csv)
     if not urls:
         print("No URLs found in CSV.", file=sys.stderr)
         return 1

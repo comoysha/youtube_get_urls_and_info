@@ -61,7 +61,81 @@ python3 download_youtube_srt_from_csv.py \
 - `--video-dir`：视频输出目录
 - `--with-video`：同时下载视频
 
+## 脚本：auto_fetch_subtitles.py
+
+自动抓取多个频道的最新视频字幕。
+
+示例：
+
+```bash
+# 抓取 channels.txt 中所有频道的最新 10 个视频字幕
+python3 auto_fetch_subtitles.py
+
+# 自定义抓取数量
+python3 auto_fetch_subtitles.py --limit 20
+
+# 增量模式：只下载新的视频字幕，跳过已下载的
+python3 auto_fetch_subtitles.py --incremental
+```
+
+参数：
+
+- `--channels`：频道列表文件（默认：`channels.txt`）
+- `--limit`：每个频道抓取的最新视频数量（默认：10）
+- `--csv-dir`：CSV 文件输出目录（默认：`youtube_dump`）
+- `--srt-dir`：字幕文件基础目录（默认：`youtube_subtitles`）
+- `--incremental`：只下载新视频，跳过已下载的字幕
+
+目录结构：
+```
+youtube_subtitles/
+├── 20vc/
+│   └── srt/
+├── joerogan/
+│   └── srt/
+└── a16z/
+    └── srt/
+```
+
+## 脚本：srt_to_markdown.py
+
+将 SRT 字幕文件转换为可读的 Markdown 格式。
+
+示例：
+
+```bash
+# 转换特定频道的所有字幕
+python3 srt_to_markdown.py --channel 20vcFund
+
+# 转换所有频道的字幕
+python3 srt_to_markdown.py
+
+# 不包含时间戳
+python3 srt_to_markdown.py --channel 20vcFund --no-timestamps
+```
+
+参数：
+
+- `--channel`：指定频道名称（如：20vcFund、joerogan、a16z）
+- `--base-dir`：字幕基础目录（默认：`youtube_subtitles`）
+- `--no-timestamps`：移除输出中的时间戳
+
+转换后目录结构：
+```
+youtube_subtitles/
+├── 20vc/
+│   ├── srt/
+│   └── md/
+├── joerogan/
+│   ├── srt/
+│   └── md/
+└── a16z/
+    ├── srt/
+    └── md/
+```
+
 ## 说明
 
 - 如果频道 URL 不包含 `@handle`，导出会报错，建议使用带 handle 的新式 URL。
 - 下载与字幕提取由 `yt-dlp` 完成。
+- 网络问题可能需要配置代理或检查网络连接。

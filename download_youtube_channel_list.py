@@ -104,6 +104,11 @@ def main() -> int:
         default=None,
         help="Limit the number of videos to fetch.",
     )
+    parser.add_argument(
+        "--incremental",
+        action="store_true",
+        help="Only fetch new videos not already in the CSV.",
+    )
     args = parser.parse_args()
 
     if not shutil.which("yt-dlp"):
@@ -139,6 +144,10 @@ def main() -> int:
         print("No video entries found.", file=sys.stderr)
         return 1
 
+    # 启用增量模式时自动启用append
+    if args.incremental:
+        args.append = True
+    
     existing = load_existing(args.output) if args.append else set()
     os.makedirs(os.path.dirname(args.output) or ".", exist_ok=True)
 
